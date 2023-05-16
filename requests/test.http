@@ -1,0 +1,138 @@
+
+### REGISTRATION
+POST localhost:8091/user/reg
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name" : "Ruben",
+  "surname" : "Kurbanov",
+  "phone" : "+420720293310",
+  "email": "kurbarub@fel.cvut.cz",
+  "password": "z1234567G",
+  "dob": "2007-12-03T10:15:30",
+  "gender": 1
+
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### VERIVY ACCOUNT
+POST localhost:8091/user/verify_account
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "kurbarub@fel.cvut.cz",
+  "password": "z1234567G",
+  "code": "3721"
+}
+
+> {%
+client.global.set("token",(response.body.accessToken))
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### LOGIN
+POST localhost:8091/user/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "kurbarub@fel.cvut.cz",
+  "password": "z1234567G"
+}
+
+### UPDATE PASSWORD
+POST localhost:8091/user/reset_pas_auth
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "curPassword": "z1234567G",
+  "newPassword": "1234567G",
+  "newPasswordAgain": "1234567G"
+}
+
+### VIEW CARS
+GET localhost:8091/car/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### ADD NEW CAR
+POST localhost:8091/car/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "brand": "BMV X5",
+  "number": "AD456ND",
+  "fuelType": 1
+}
+
+### VIEW CARS
+GET localhost:8091/car/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+
+### VIEW CARDS
+GET localhost:8091/card/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### ADD NEW CARD
+POST localhost:8091/card/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cardNumber": "2234567891919999",
+  "dateExp": "2025-12-03T00:00:00",
+  "cvv": 123
+}
+
+> {%
+client.global.set("cardId",(response.body.id))
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### VIEW CARDS
+GET localhost:8091/card/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### DELETE CARD
+DELETE localhost:8091/card/{{cardId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### OPEN WS
+GET /refueling
+Host: localhost:8091
+Connection: Upgrade
+Upgrade: websocket
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Key: 0IWP54wq74lCvFgweXFKrg==
+Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
+Authorization: Bearer {{token}}
+
+#{
+#
+#}

@@ -1,0 +1,73 @@
+### REGISTRATION ADMIN
+POST localhost:8091/user/reg
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name" : "Ruben",
+  "surname" : "Kurbanov",
+  "phone" : "+420720293310",
+  "email": "admin1@mygs.com",
+  "password": "z1234567G",
+  "dob": "2007-12-03T10:15:30",
+  "gender": 1
+
+}
+
+### VERIVY ACCOUNT
+POST localhost:8091/user/verify_account
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin1@mygs.com",
+  "password": "z1234567G",
+  "code": "5891"
+}
+
+> {%
+client.global.set("tokenAdmin",(response.body.accessToken))
+    client.test("Request executed successfully", function() {
+
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### LOGIN
+POST localhost:8091/user/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin1@mygs.com",
+  "password": "z1234567G"
+}
+
+
+> {%
+client.global.set("tokenAdmin",(response.body.accessToken))
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### GET ALL QUESTIONS
+GET localhost:8091/question/
+Content-Type: application/json
+Accept: application/json
+
+### ADD NEW QUESTION
+POST localhost:8091/question/add
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+  "title" : "How to get money?",
+  "answer": "No comment!"
+}
+
+### GET ALL QUESTIONS
+GET localhost:8091/question/
+Content-Type: application/json
+Accept: application/json

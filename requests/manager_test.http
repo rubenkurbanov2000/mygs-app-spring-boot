@@ -1,0 +1,282 @@
+### REGISTRATION ADMIN
+POST localhost:8091/user/reg
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name" : "Admin",
+  "surname" : "Adminov",
+  "phone" : "+420720293310",
+  "email": "admin1@mygs.admin.com",
+  "password": "z1234567G",
+  "dob": "2007-12-03T10:15:30",
+  "gender": 1
+
+}
+
+### VERIVY ACCOUNT ADMIN
+POST localhost:8091/user/verify_account
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin1@mygs.admin.com",
+  "password": "z1234567G",
+  "code": "8271"
+}
+
+> {%
+client.global.set("tokenAdmin",(response.body.accessToken))
+    client.test("Request executed successfully", function() {
+
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### REGISTRATION NEW MANAGER
+POST localhost:8091/user/manager
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+  "name" : "Manager",
+  "surname" : "Managerov",
+  "phone" : "+420720293310",
+  "email": "manager1@mygs.manager.com",
+  "password": "z1234567G",
+  "dob": "2007-12-03T10:15:30",
+  "gender": 1
+}
+
+### VERIVY ACCOUNT MANAGER
+POST localhost:8091/user/verify_account
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "manager1@mygs.manager.com",
+  "password": "z1234567G",
+  "code": "3789"
+}
+
+> {%
+client.global.set("tokenManager",(response.body.accessToken))
+    client.test("Request executed successfully", function() {
+
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### REGISTRATION NEW GAS STATION
+POST localhost:8091/manager/gs
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "name" : "Shell",
+  "services": "0456",
+  "paymentMethods": "012",
+  "atitude": 12131.213,
+  "longtitude": -12131.213,
+  "buildingNumber": "046",
+  "city": "Prague",
+  "street": "Na Blatech",
+  "zipCode": "120030"
+
+}
+
+> {%
+client.global.set("gsId",(response.body.id))
+    client.test("Request executed successfully", function() {
+
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### ADD SCHEDULE TO GAS STATION
+POST localhost:8091/manager/gs/schedule-add/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "schedule": [
+    {
+      "dayOfWeek": 1,
+      "openFrom" : "2007-12-03T00:00:00",
+      "openTo" : "2007-12-03T00:00:00",
+      "isClosed": false,
+      "isAroundTheClock": true
+    },
+    {
+      "dayOfWeek": 2,
+      "openFrom" : "2007-12-03T00:00:00",
+      "openTo" : "2007-12-03T00:00:00",
+      "isClosed": false,
+      "isAroundTheClock": true
+    },
+    {
+      "dayOfWeek": 3,
+      "openFrom" : "2007-12-03T11:00:00",
+      "openTo" : "2007-12-03T23:00:00",
+      "isClosed": false,
+      "isAroundTheClock": false
+    },
+    {
+      "dayOfWeek": 4,
+      "openFrom" : "2007-12-03T00:00:00",
+      "openTo" : "2007-12-03T00:00:00",
+      "isClosed": false,
+      "isAroundTheClock": true
+    },
+    {
+      "dayOfWeek": 5,
+      "openFrom" : "2007-12-03T00:00:00",
+      "openTo" : "2007-12-03T00:00:00",
+      "isClosed": false,
+      "isAroundTheClock": true
+    },
+    {
+      "dayOfWeek": 6,
+      "openFrom" : "2007-12-03T00:00:00",
+      "openTo" : "2007-12-03T00:00:00",
+      "isClosed": true,
+      "isAroundTheClock": true
+    },
+    {
+      "dayOfWeek": 7,
+      "openFrom" : "2007-12-03T00:00:00",
+      "openTo" : "2007-12-03T00:00:00",
+      "isClosed": true,
+      "isAroundTheClock": true
+    }
+  ]
+
+}
+
+### ADD NEW OFFER1 TO GAS STATION
+POST localhost:8091/manager/gs/offer/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "content": "Some akce content",
+  "imgUrl": "url",
+  "title": "2 coffee"
+}
+
+### ADD NEW OFFER2 TO GAS STATION
+POST localhost:8091/manager/gs/offer/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "content": "Some akce content2",
+  "imgUrl": "url",
+  "title": "3 coffee"
+}
+
+### CHANGE SCHEDULE TO GAS STATION
+POST localhost:8091/manager/gs/schedule/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "dayOfWeek": 7,
+  "openFrom" : "2007-12-03T00:00:00",
+  "openTo" : "2007-12-03T00:00:00",
+  "isClosed": false,
+  "isAroundTheClock": false
+}
+
+### GET GS INFO
+GET localhost:8091/gas_station/info/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+### ADD REFUELING STAND TO GAS STATION
+POST localhost:8091/manager/gs/rs/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "stand_id": 2
+}
+
+> {%
+client.global.set("standId",(response.body.stand_id))
+    client.test("Request executed successfully", function() {
+
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### ADD FUEL TO GAS STATION
+POST localhost:8091/manager/gs/fuel/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "name": "95 Neutral",
+  "price": 45.47,
+  "fuelType": 0
+}
+
+> {%
+client.global.set("fuelId",(response.body.id))
+    client.test("Request executed successfully", function() {
+
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### ADD FUEL TO GAS STATION
+POST localhost:8091/manager/gs/fuel/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "name": "Disel",
+  "price": 60.89,
+  "fuelType": 1
+}
+
+> {%
+client.global.set("fuelId",(response.body.id))
+    client.test("Request executed successfully", function() {
+
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### CONNECT FUEL TO FUEL STAND
+POST localhost:8091/manager/gs/fuel-rs/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "stand_id": 2,
+  "fuel_id" : {{fuelId}}
+}
+
+### APDARE FUEL PRICE TO FUEL STAND
+POST localhost:8091/manager/gs/fuel-update/{{gsId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenManager}}
+
+{
+  "fuel_id": {{fuelId}},
+  "price" : 90.80
+}
